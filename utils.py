@@ -248,7 +248,7 @@ def prepare_parser():
     help='Default location to store all weights, samples, data, and logs '
            ' (default: %(default)s)')
   parser.add_argument(
-    '--data_root', type=str, default='data',
+    '--data_root', type=str, default='/content/drive/MyDrive',
     help='Default location where data is stored (default: %(default)s)')
   parser.add_argument(
     '--weights_root', type=str, default='weights',
