@@ -898,15 +898,14 @@ def sample_sheet(G, classes_per_sheet, num_classes, samples_per_class, parallel,
 
       ims += [o.data.cpu()]
     # This line should properly unroll the images
-    #out_ims = torch.stack(ims, 1).view(-1, ims[0].shape[1], ims[0].shape[2], 
-    #                                   ims[0].shape[3]).data.float().cpu()
-    out_ims = ims
+    out_ims = torch.stack(ims, 1).view(-1, ims[0].shape[1], ims[0].shape[2], 
+                                       ims[0].shape[3]).data.float().cpu()
     out_ims = torch.from_numpy(out_ims.numpy())
     # The path for the samples
     image_filename = '%s/%s/%d/samples%d.jpg' % (samples_root, experiment_name, 
                                                  folder_number, i)
     torchvision.utils.save_image(out_ims, image_filename,
-                                 nrow=samples_per_class, normalize=True)
+                                 nrow=8, normalize=True)
 
 
 # Interp function; expects x0 and x1 to be of shape (shape0, 1, rest_of_shape..)
