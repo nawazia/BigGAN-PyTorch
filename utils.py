@@ -524,7 +524,7 @@ class MultiEpochSampler(torch.utils.data.Sampler):
 def get_data_loaders(dataset, data_root=None, augment=False, batch_size=64, 
                      num_workers=8, shuffle=True, load_in_mem=False, hdf5=False,
                      pin_memory=True, drop_last=True, start_itr=0,
-                     num_epochs=500, use_multiepoch_sampler=False, gray=True,
+                     num_epochs=500, use_multiepoch_sampler=False, gray=False,
                      **kwargs):
 
   # Append /FILENAME.hdf5 to root if using hdf5
