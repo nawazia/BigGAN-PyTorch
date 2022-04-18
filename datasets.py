@@ -160,7 +160,7 @@ class ImageFolder(data.Dataset):
     if self.target_transform is not None:
       target = self.target_transform(target)
     
-    # print(img.size(), target)
+    print(img.size(), int(target))
     return img, int(target)
 
   def __len__(self):
