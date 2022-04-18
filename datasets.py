@@ -445,5 +445,7 @@ class LunaDataset(Dataset):
         extractedPatches = extractedPatches.squeeze()
         extractedPatches = extractedPatches.unsqueeze(1)
         #print('len of extractedPatches: ',extractedPatches.size())      # len of extractedPatches:  (100, 1, 64, 64)
+        extractedPatches = extractedPatches.repeat(1, 3, 1, 1)
+        #print('len of extractedPatches: ',extractedPatches.size())      # len of extractedPatches:  (100, 3, 64, 64)
 
         return extractedPatches
