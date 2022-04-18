@@ -171,7 +171,7 @@ def run(config):
     for i, (x, y) in enumerate(pbar):
       # Increment the iteration counter
       state_dict['itr'] += 1
-      print(x.size(),y.size())
+#       print(x.size(),y.size())
       # Make sure G and D are in training mode, just in case they got set to eval
       # For D, which typically doesn't have BN, this shouldn't matter much.
       G.train()
