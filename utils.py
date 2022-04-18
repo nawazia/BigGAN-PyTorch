@@ -557,14 +557,16 @@ def get_data_loaders(dataset, data_root=None, augment=False, batch_size=64,
       if dataset in ['C10', 'C100']:
         train_transform = []
       else:
-        if gray is True:
-          train_transform = [CenterCropLongEdge(), transforms.Resize(image_size), transforms.Grayscale(1)]
-        else:
-          train_transform = [CenterCropLongEdge(), transforms.Resize(image_size)]
+        train_transform = [CenterCropLongEdge(), transforms.Resize(image_size)]
       # train_transform = [transforms.Resize(image_size), transforms.CenterCrop]
-    train_transform = transforms.Compose(train_transform + [
-                     transforms.ToTensor(),
-                     transforms.Normalize(norm_mean, norm_std)])
+    if gray is True:
+      train_transform = transforms.Compose(train_transform + [
+                        transforms.ToTensor(),
+                        transforms.Normalize(norm_mean, norm_std),transforms.Grayscale(1)])
+    else:
+      train_transform = transforms.Compose(train_transform + [
+                        transforms.ToTensor(),
+                        transforms.Normalize(norm_mean, norm_std)])
   train_set = which_dataset(root=data_root, transform=train_transform,
                             load_in_mem=load_in_mem, **dataset_kwargs)
 
