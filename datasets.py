@@ -448,4 +448,4 @@ class LunaDataset(Dataset):
         extractedPatches = extractedPatches.repeat(1, 3, 1, 1)
         #print('len of extractedPatches: ',extractedPatches.size())      # len of extractedPatches:  (100, 3, 64, 64)
 
-        return extractedPatches
+        return (extractedPatches, int(0))
