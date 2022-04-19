@@ -405,7 +405,7 @@ dset_dict = {'I32': dset.ImageFolder, 'I64': dset.ImageFolder,
              'I128': dset.ImageFolder, 'I256': dset.ImageFolder,
              'I32_hdf5': dset.ILSVRC_HDF5, 'I64_hdf5': dset.ILSVRC_HDF5, 
              'I128_hdf5': dset.ILSVRC_HDF5, 'I256_hdf5': dset.ILSVRC_HDF5,
-             'C10': dset.CIFAR10, 'C100': dset.CIFAR100, 'real2': dset.LunaDataset}
+             'C10': dset.CIFAR10, 'C100': dset.CIFAR100, 'real2': dset.ImageFolder}
 imsize_dict = {'I32': 32, 'I32_hdf5': 32,
                'I64': 64, 'I64_hdf5': 64,
                'I128': 128, 'I128_hdf5': 128,
@@ -521,7 +521,7 @@ class MultiEpochSampler(torch.utils.data.Sampler):
 
 
 # Convenience function to centralize all data loaders
-def get_data_loaders(dataset, data_root=None, augment=False, batch_size=16, 
+def get_data_loaders(dataset, data_root=None, augment=False, batch_size=64, 
                      num_workers=8, shuffle=True, load_in_mem=False, hdf5=False,
                      pin_memory=True, drop_last=True, start_itr=0,
                      num_epochs=500, use_multiepoch_sampler=False, gray=False,
@@ -565,11 +565,11 @@ def get_data_loaders(dataset, data_root=None, augment=False, batch_size=16,
                         transforms.Normalize(norm_mean, norm_std),transforms.Grayscale(1)])
     else:
       train_transform = transforms.Compose(train_transform + [
-#                         transforms.ToTensor(),
+                        transforms.ToTensor(),
                         transforms.Normalize(norm_mean, norm_std)])
-#   train_set = which_dataset(root=data_root, transform=train_transform,
-#                             load_in_mem=load_in_mem, **dataset_kwargs)
-  train_set = which_dataset('/content/drive/My Drive/luna16/data/', batch_size)
+  train_set = which_dataset(root=data_root, transform=train_transform,
+                            load_in_mem=load_in_mem, **dataset_kwargs)
+#   train_set = which_dataset('/content/drive/My Drive/luna16/data/', batch_size)
 
   # Prepare loader; the loaders list is for forward compatibility with
   # using validation / test splits.
