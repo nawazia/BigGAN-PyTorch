@@ -56,15 +56,12 @@ def run(config):
   pool, logits, labels = [], [], []
   device = 'cuda'
   for i, (x, y) in enumerate(tqdm(loaders[0])):
-    x = x.squeeze(0)
     x = x.to(device)
-    #print(x.size(),np.shape(y))      # torch.Size([16, 3, 64, 64]) (16,)
-    for j in range(len(x)):
-      with torch.no_grad():
-        pool_val, logits_val = net(x[j])
-        pool += [np.asarray(pool_val.cpu())]
-        logits += [np.asarray(F.softmax(logits_val, 1).cpu())]
-        labels += [np.asarray(y[j].cpu())]
+    with torch.no_grad():
+      pool_val, logits_val = net(x[j])
+      pool += [np.asarray(pool_val.cpu())]
+      logits += [np.asarray(F.softmax(logits_val, 1).cpu())]
+      labels += [np.asarray(y[j].cpu())]
 
   pool, logits, labels = [np.concatenate(item, 0) for item in [pool, logits, labels]]
   # uncomment to save pool, logits, and labels to disk
