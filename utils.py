@@ -888,7 +888,7 @@ def sample_sheet(G, classes_per_sheet, num_classes, samples_per_class, parallel,
   if not os.path.isdir('%s/%s/%d' % (samples_root, experiment_name, folder_number)):
     os.mkdir('%s/%s/%d' % (samples_root, experiment_name, folder_number))
   # loop over total number of sheets
-  for k in range(10000):
+  for k in range(1):
     for i in range(num_classes // classes_per_sheet):
       ims = []
       y = torch.arange(i * classes_per_sheet, (i + 1) * classes_per_sheet, device='cuda')
@@ -909,7 +909,9 @@ def sample_sheet(G, classes_per_sheet, num_classes, samples_per_class, parallel,
                                          ims[0].shape[3]).data.float().cpu()
       out_ims = torch.from_numpy(out_ims.numpy())
       # The path for the samples
-      image_filename = '/content/drive/MyDrive/BigGAN/10thousand/%d/samples_%d.jpg' % (folder_number, k)
+      image_filename = '%s/%s/%d/samples%d.jpg' % (samples_root, experiment_name, 
+                                                   folder_number, i)
+#       image_filename = '/content/drive/MyDrive/BigGAN/10thousand/%d/samples_%d.jpg' % (folder_number, k)
       torchvision.utils.save_image(out_ims, image_filename,
                                    nrow=1, normalize=True)
 
