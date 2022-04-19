@@ -569,7 +569,7 @@ def get_data_loaders(dataset, data_root=None, augment=False, batch_size=1,
                         transforms.Normalize(norm_mean, norm_std)])
 #   train_set = which_dataset(root=data_root, transform=train_transform,
 #                             load_in_mem=load_in_mem, **dataset_kwargs)
-  train_set = which_dataset('/content/drive/My Drive/luna16/data/', 16, transform=train_transform)
+  train_set = which_dataset('/content/drive/My Drive/luna16/data/', 16)
 
   # Prepare loader; the loaders list is for forward compatibility with
   # using validation / test splits.
