@@ -129,9 +129,9 @@ def run(config):
   # Note that at every loader iteration we pass in enough data to complete
   # a full D iteration (regardless of number of D steps and accumulations)
     
-#   D_batch_size = (config['batch_size'] * config['num_D_steps']
-#                   * config['num_D_accumulations'])
-  loaders = utils.get_data_loaders(**{**config, 'batch_size': config['batch_size'],
+  D_batch_size = (config['batch_size'] * config['num_D_steps']
+                  * config['num_D_accumulations'])
+  loaders = utils.get_data_loaders(**{**config, 'batch_size': D_batch_size,
                                       'start_itr': state_dict['itr']})
 
   # Prepare inception metrics: FID and IS
