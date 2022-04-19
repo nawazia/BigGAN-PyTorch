@@ -450,4 +450,5 @@ class LunaDataset(Dataset):
         #print('len of extractedPatches: ',extractedPatches.size())      # len of extractedPatches:  (100, 3, 64, 64)
         if self.transform:
             extractedPatches = self.transform(extractedPatches)
-        return (extractedPatches, int(0))
+        target = [0] * len(extractedPatches)
+        return (extractedPatches, target)
