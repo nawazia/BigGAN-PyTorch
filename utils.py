@@ -521,7 +521,7 @@ class MultiEpochSampler(torch.utils.data.Sampler):
 
 
 # Convenience function to centralize all data loaders
-def get_data_loaders(dataset, data_root=None, augment=False, batch_size=1, 
+def get_data_loaders(dataset, data_root=None, augment=False, batch_size=16, 
                      num_workers=8, shuffle=True, load_in_mem=False, hdf5=False,
                      pin_memory=True, drop_last=True, start_itr=0,
                      num_epochs=500, use_multiepoch_sampler=False, gray=False,
@@ -569,7 +569,7 @@ def get_data_loaders(dataset, data_root=None, augment=False, batch_size=1,
                         transforms.Normalize(norm_mean, norm_std)])
 #   train_set = which_dataset(root=data_root, transform=train_transform,
 #                             load_in_mem=load_in_mem, **dataset_kwargs)
-  train_set = which_dataset('/content/drive/My Drive/luna16/data/', 16)
+  train_set = which_dataset('/content/drive/My Drive/luna16/data/', batch_size)
 
   # Prepare loader; the loaders list is for forward compatibility with
   # using validation / test splits.
@@ -578,12 +578,12 @@ def get_data_loaders(dataset, data_root=None, augment=False, batch_size=1,
     print('Using multiepoch sampler from start_itr %d...' % start_itr)
     loader_kwargs = {'num_workers': num_workers, 'pin_memory': pin_memory}
     sampler = MultiEpochSampler(train_set, num_epochs, start_itr, batch_size)
-    train_loader = DataLoader(train_set, batch_size=batch_size,
+    train_loader = DataLoader(train_set, batch_size=1,
                               sampler=sampler, **loader_kwargs)
   else:
     loader_kwargs = {'num_workers': num_workers, 'pin_memory': pin_memory,
                      'drop_last': drop_last} # Default, drop last incomplete batch
-    train_loader = DataLoader(train_set, batch_size=batch_size,
+    train_loader = DataLoader(train_set, batch_size=1,
                               shuffle=shuffle, **loader_kwargs)
   loaders.append(train_loader)
   return loaders
