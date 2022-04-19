@@ -170,6 +170,8 @@ def run(config):
       pbar = tqdm(loaders[0])
     for i, (x, y) in enumerate(pbar):
       # Increment the iteration counter
+      x = x.squeeze(0)
+#       y = y.squeeze()
       state_dict['itr'] += 1
 #       print(x.size(),y.size())
       # Make sure G and D are in training mode, just in case they got set to eval
