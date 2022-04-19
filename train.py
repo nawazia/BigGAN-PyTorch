@@ -172,7 +172,7 @@ def run(config):
     for i, (x, y) in enumerate(pbar):
       # Increment the iteration counter
       x = x.squeeze(0)      #   (16,3,64,64)
-      y = torch.as_tensor(y, dtype=torch.float)
+      y = torch.as_tensor(y)
       state_dict['itr'] += 1
 #       print(x.size(),y.size())
       # Make sure G and D are in training mode, just in case they got set to eval
