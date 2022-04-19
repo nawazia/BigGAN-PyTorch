@@ -57,7 +57,7 @@ def run(config):
   device = 'cuda'
   for i, (x, y) in enumerate(tqdm(loaders[0])):
     x = x.to(device)
-    print(x.size(),y.size())
+    print(x.size(),np.shape(y))
     with torch.no_grad():
       pool_val, logits_val = net(x)
       pool += [np.asarray(pool_val.cpu())]
