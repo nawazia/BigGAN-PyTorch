@@ -160,7 +160,7 @@ class ImageFolder(data.Dataset):
     if self.target_transform is not None:
       target = self.target_transform(target)
     
-    print(img.size(), int(target))
+#     print(img.size(), int(target))
     return img, int(target)
 
   def __len__(self):
@@ -397,9 +397,10 @@ def patch(data, x, y):
 
 class LunaDataset(Dataset):
     def __init__(
-    self, subsets, num_patch_per_ct
+    self, subsets, num_patch_per_ct, transform=None
     ):
         self.subsets = subsets
+        self.transform = transform
         self.num_patch_per_ct = num_patch_per_ct
         self.files = glob.glob(subsets + '/subset*/*.mhd')
         self.files_seg = glob.glob(subsets + '/seg-lungs-LUNA16/*.mhd')
@@ -447,5 +448,6 @@ class LunaDataset(Dataset):
         #print('len of extractedPatches: ',extractedPatches.size())      # len of extractedPatches:  (100, 1, 64, 64)
         extractedPatches = extractedPatches.repeat(1, 3, 1, 1)
         #print('len of extractedPatches: ',extractedPatches.size())      # len of extractedPatches:  (100, 3, 64, 64)
-
+        if self.transform:
+            extractedPatches = self.transform(extractedPatches)
         return (extractedPatches, int(0))
