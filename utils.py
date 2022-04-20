@@ -910,7 +910,7 @@ def sample_sheet(G, classes_per_sheet, num_classes, samples_per_class, parallel,
       out_ims = torch.from_numpy(out_ims.numpy())
       # The path for the samples
       image_filename = '%s/%s/%d/samples%d.jpg' % (samples_root, experiment_name, 
-                                                   folder_number, i)
+                                                   folder_number, k)
 #       image_filename = '/content/drive/MyDrive/BigGAN/10thousand/%d/samples_%d.jpg' % (folder_number, k)
       torchvision.utils.save_image(out_ims, image_filename,
                                    nrow=1, normalize=True)
