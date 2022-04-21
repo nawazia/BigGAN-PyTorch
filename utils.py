@@ -912,7 +912,7 @@ def sample_sheet(G, classes_per_sheet, num_classes, samples_per_class, parallel,
                                                  folder_number, i)
 #       image_filename = '/content/drive/MyDrive/BigGAN/10thousand/%d/samples_%d.jpg' % (folder_number, k)
     torchvision.utils.save_image(out_ims, image_filename,
-                                 nrow=8, normalize=True)
+                                 nrow=samples_per_class, normalize=True)
 
 
 # Interp function; expects x0 and x1 to be of shape (shape0, 1, rest_of_shape..)
