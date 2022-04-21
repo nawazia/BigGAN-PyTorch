@@ -34,7 +34,7 @@ def prepare_parser():
   ### Dataset/Dataloader stuff ###
   parser.add_argument(
     '--dataset', type=str, default='real2',
-    help='Which Dataset to train on, out of real2, I128, I256, C10, C100;'
+    help='Which Dataset to train on, out of real2, cgan, I128, I256, C10, C100;'
          'Append "_hdf5" to use the hdf5 version for ISLVRC '
          '(default: %(default)s)')
   parser.add_argument(
@@ -405,28 +405,28 @@ dset_dict = {'I32': dset.ImageFolder, 'I64': dset.ImageFolder,
              'I128': dset.ImageFolder, 'I256': dset.ImageFolder,
              'I32_hdf5': dset.ILSVRC_HDF5, 'I64_hdf5': dset.ILSVRC_HDF5, 
              'I128_hdf5': dset.ILSVRC_HDF5, 'I256_hdf5': dset.ILSVRC_HDF5,
-             'C10': dset.CIFAR10, 'C100': dset.CIFAR100, 'real2': dset.ImageFolder}
+             'C10': dset.CIFAR10, 'C100': dset.CIFAR100, 'real2': dset.ImageFolder, 'cgan': dset.ImageFolder}
 imsize_dict = {'I32': 32, 'I32_hdf5': 32,
                'I64': 64, 'I64_hdf5': 64,
                'I128': 128, 'I128_hdf5': 128,
                'I256': 256, 'I256_hdf5': 256,
-               'C10': 32, 'C100': 32, 'real2': 64}
+               'C10': 32, 'C100': 32, 'real2': 64, 'cgan': 64}
 root_dict = {'I32': 'ImageNet', 'I32_hdf5': 'ILSVRC32.hdf5',
              'I64': 'ImageNet', 'I64_hdf5': 'ILSVRC64.hdf5',
              'I128': 'ImageNet', 'I128_hdf5': 'ILSVRC128.hdf5',
              'I256': 'ImageNet', 'I256_hdf5': 'ILSVRC256.hdf5',
-             'C10': 'cifar', 'C100': 'cifar', 'real2': 'real2'}
+             'C10': 'cifar', 'C100': 'cifar', 'real2': 'real2', 'cgan': 'cgan_data'}
 nclass_dict = {'I32': 1000, 'I32_hdf5': 1000,
                'I64': 1000, 'I64_hdf5': 1000,
                'I128': 1000, 'I128_hdf5': 1000,
                'I256': 1000, 'I256_hdf5': 1000,
-               'C10': 10, 'C100': 100, 'real2': 1}
+               'C10': 10, 'C100': 100, 'real2': 1, 'cgan': 10}
 # Number of classes to put per sample sheet               
 classes_per_sheet_dict = {'I32': 50, 'I32_hdf5': 50,
                           'I64': 50, 'I64_hdf5': 50,
                           'I128': 20, 'I128_hdf5': 20,
                           'I256': 20, 'I256_hdf5': 20,
-                          'C10': 10, 'C100': 100, 'real2': 1}
+                          'C10': 10, 'C100': 100, 'real2': 1, 'cgan': 10}
 activation_dict = {'inplace_relu': nn.ReLU(inplace=True),
                    'relu': nn.ReLU(inplace=False),
                    'ir': nn.ReLU(inplace=True),}
@@ -888,32 +888,31 @@ def sample_sheet(G, classes_per_sheet, num_classes, samples_per_class, parallel,
   if not os.path.isdir('%s/%s/%d' % (samples_root, experiment_name, folder_number)):
     os.mkdir('%s/%s/%d' % (samples_root, experiment_name, folder_number))
   # loop over total number of sheets
-  for k in range(33):
-    for i in range(num_classes // classes_per_sheet):
-      ims = []
-      y = torch.arange(i * classes_per_sheet, (i + 1) * classes_per_sheet, device='cuda')
-      for j in range(samples_per_class):
-        if (z_ is not None) and hasattr(z_, 'sample_') and classes_per_sheet <= z_.size(0):
-          z_.sample_()
+  for i in range(num_classes // classes_per_sheet):
+    ims = []
+    y = torch.arange(i * classes_per_sheet, (i + 1) * classes_per_sheet, device='cuda')
+    for j in range(samples_per_class):
+      if (z_ is not None) and hasattr(z_, 'sample_') and classes_per_sheet <= z_.size(0):
+        z_.sample_()
+      else:
+        z_ = torch.randn(classes_per_sheet, G.dim_z, device='cuda')        
+      with torch.no_grad():
+        if parallel:
+          o = nn.parallel.data_parallel(G, (z_[:classes_per_sheet], G.shared(y)))
         else:
-          z_ = torch.randn(classes_per_sheet, G.dim_z, device='cuda')        
-        with torch.no_grad():
-          if parallel:
-            o = nn.parallel.data_parallel(G, (z_[:classes_per_sheet], G.shared(y)))
-          else:
-            o = G(z_[:classes_per_sheet], G.shared(y))
+          o = G(z_[:classes_per_sheet], G.shared(y))
 
-        ims += [o.data.cpu()]
-      # This line should properly unroll the images
-      out_ims = torch.stack(ims, 1).view(-1, ims[0].shape[1], ims[0].shape[2], 
-                                         ims[0].shape[3]).data.float().cpu()
-      out_ims = torch.from_numpy(out_ims.numpy())
-      # The path for the samples
-      image_filename = '%s/%s/%d/samples%d.jpg' % (samples_root, experiment_name, 
-                                                   folder_number, k)
+      ims += [o.data.cpu()]
+    # This line should properly unroll the images
+    out_ims = torch.stack(ims, 1).view(-1, ims[0].shape[1], ims[0].shape[2], 
+                                       ims[0].shape[3]).data.float().cpu()
+    out_ims = torch.from_numpy(out_ims.numpy())
+    # The path for the samples
+    image_filename = '%s/%s/%d/samples%d.jpg' % (samples_root, experiment_name, 
+                                                 folder_number, i)
 #       image_filename = '/content/drive/MyDrive/BigGAN/10thousand/%d/samples_%d.jpg' % (folder_number, k)
-      torchvision.utils.save_image(out_ims, image_filename,
-                                   nrow=1, normalize=True)
+    torchvision.utils.save_image(out_ims, image_filename,
+                                 nrow=samples_per_class, normalize=True)
 
 
 # Interp function; expects x0 and x1 to be of shape (shape0, 1, rest_of_shape..)
