@@ -420,13 +420,13 @@ nclass_dict = {'I32': 1000, 'I32_hdf5': 1000,
                'I64': 1000, 'I64_hdf5': 1000,
                'I128': 1000, 'I128_hdf5': 1000,
                'I256': 1000, 'I256_hdf5': 1000,
-               'C10': 10, 'C100': 100, 'real2': 1, 'cgan': 10}
+               'C10': 10, 'C100': 100, 'real2': 1, 'cgan': 1}
 # Number of classes to put per sample sheet               
 classes_per_sheet_dict = {'I32': 50, 'I32_hdf5': 50,
                           'I64': 50, 'I64_hdf5': 50,
                           'I128': 20, 'I128_hdf5': 20,
                           'I256': 20, 'I256_hdf5': 20,
-                          'C10': 10, 'C100': 100, 'real2': 1, 'cgan': 10}
+                          'C10': 10, 'C100': 100, 'real2': 1, 'cgan': 1}
 activation_dict = {'inplace_relu': nn.ReLU(inplace=True),
                    'relu': nn.ReLU(inplace=False),
                    'ir': nn.ReLU(inplace=True),}
@@ -912,7 +912,7 @@ def sample_sheet(G, classes_per_sheet, num_classes, samples_per_class, parallel,
                                                  folder_number, i)
 #       image_filename = '/content/drive/MyDrive/BigGAN/10thousand/%d/samples_%d.jpg' % (folder_number, k)
     torchvision.utils.save_image(out_ims, image_filename,
-                                 nrow=samples_per_class, normalize=True)
+                                 nrow=1, normalize=True)
 
 
 # Interp function; expects x0 and x1 to be of shape (shape0, 1, rest_of_shape..)
